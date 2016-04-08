@@ -1,5 +1,4 @@
 $(function () {
-    var numElements = 0;
     
     /*
      *   Create sidebar used for selecting items to add to survey such as:
@@ -95,6 +94,10 @@ $(function () {
         return text;
     }
     
+    /**
+     * Makes a div for long answer questions
+     * Gets the information needed to generate a long answer question
+     */
     var makeLongAnswerQuestionDiv = function(div){
         if (!w2ui.laGetInfo) {
             $().w2form({
@@ -144,7 +147,7 @@ $(function () {
     /**
      * Gets the information needed to generate a MC question
      * Gets the question and number of possible choices and each choice
-     * 
+
      */
     var makeMCQuestionDiv = function(div){
             if (!w2ui.mcGetInfo) {
@@ -159,21 +162,6 @@ $(function () {
                     { field: 'choice_3', type: 'text', required: false, html: { caption: 'Choice 3', attr: 'style="width: 300px"' } },
                     { field: 'choice_4', type: 'text', required: false, html: { caption: 'Choice 4', attr: 'style="width: 300px"' } },
                     { field: 'choice_5', type: 'text', required: false, html: { caption: 'Choice 5', attr: 'style="width: 300px"' } },
-                    { field: 'field_radio', type: 'radio', required: false, html: { attr: 'style="width: 10px"' }, options: {
-                        items: [
-                            { id: 0, text: 'Pickle, Susan' },
-                            { id: 1, text: 'Adams, John' },
-                            { id: 2, text: 'Openhimer, Peter' },
-                            { id: 3, text: 'Woznyak, Steve' },
-                            { id: 4, text: 'Rusevelt, Franklin' },
-                            { id: 5, text: 'Stalone, Silvester' },
-                            { id: 6, text: 'Mann, Fred' },
-                            { id: 6, text: 'Ford, Mary' },
-                            { id: 8, text: 'Purky, Mon' },
-                            { id: 9, text: 'Min, Hla' }
-                        ]
-                    }
-                }
                 ],
                 record: { 
                     question : 'Enter Question Here',
@@ -182,7 +170,6 @@ $(function () {
                     choice_3 : 'Optional',
                     choice_4 : 'Optional',
                     choice_5 : 'Optional',
-                    field_radio : 0
                 },
                 actions: {
                     "save": function () {
@@ -190,7 +177,47 @@ $(function () {
                                 this.save(function(res) {
                                     if(res.status == "success"){
                                         w2popup.close();
-                                        //todo add contents of form to page
+                                        $('#'+div).w2form({
+                                            name     : div + '',
+                                            header   : 'Field Types', 
+                                            fields: [
+                                                { field: 'field_enum', type: 'enum', openOnFocus: true , max: 1,  html: { caption: 'Test', attr: 'style="width: 300px"' }, 
+                                                options: { 
+                                                    items: [
+                                                            { id: 0, text: 'Pickle, Susan' },
+                                                            { id: 1, text: 'Adams, John' },
+                                                            { id: 2, text: 'Openhimer, Peter' },
+                                                            { id: 3, text: 'Woznyak, Steve' },
+                                                            { id: 4, text: 'Rusevelt, Franklin' },
+                                                            { id: 5, text: 'Stalone, Silvester' },
+                                                            { id: 6, text: 'Mann, Fred' },
+                                                            { id: 6, text: 'Ford, Mary' },
+                                                            { id: 8, text: 'Purky, Mon' },
+                                                            { id: 9, text: 'Min, Hla' }
+                                                        ] 
+                                            } },
+                                                { field: 'field.list', type: 'list', required: true,
+                                                    options: {
+                                                        match: 'contains',
+                                                        compare: function (item) {
+                                                            if (item.id < 4) return false;
+                                                        },
+                                                        items: [
+                                                            { id: 0, text: 'Pickle, Susan' },
+                                                            { id: 1, text: 'Adams, John' },
+                                                            { id: 2, text: 'Openhimer, Peter' },
+                                                            { id: 3, text: 'Woznyak, Steve' },
+                                                            { id: 4, text: 'Rusevelt, Franklin' },
+                                                            { id: 5, text: 'Stalone, Silvester' },
+                                                            { id: 6, text: 'Mann, Fred' },
+                                                            { id: 6, text: 'Ford, Mary' },
+                                                            { id: 8, text: 'Purky, Mon' },
+                                                            { id: 9, text: 'Min, Hla' }
+                                                        ]
+                                                    }
+                                                },
+                                            ]
+                                        });
                                     }
                                 });
                             }
