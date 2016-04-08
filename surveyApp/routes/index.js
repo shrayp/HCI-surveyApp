@@ -6,4 +6,9 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+
+router.post('/mainpage', function(request, response, next) {
+   console.log(request.body);
+   response.send({ status : "success"});
+});
 module.exports = router;
