@@ -59,9 +59,9 @@ $(function () {
         $('#toolbar').w2toolbar({
             name: 'toolbar',
             items: [
-                { type: 'button' , id: 'New', caption: 'New', icon: 'fa-star'},
+                { type: 'button' , id: 'New', caption: 'New', hint: 'Click this button to start over again' },
                 { type: 'break',  id: 'break0' },
-                { type: 'button' , id: 'Finish', caption: 'Finish', icon: 'fa-star'},
+                { type: 'button' , id: 'Finish', caption: 'Finish', hint: 'Click this button to save your work and send it to the server' },
                 { type: 'break',  id: 'break0' }
             ],
             onClick: function (event) {
@@ -123,7 +123,7 @@ $(function () {
             });
         }
         $().w2popup('open', {
-            title   : 'Multiple Choice Question',
+            title   : 'True or False Question',
             body    : '<div id="form" style="width: 100%; height: 100%;"></div>',
             style   : 'padding: 15px 0px 0px 0px',
             width   : 500,

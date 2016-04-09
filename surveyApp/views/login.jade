@@ -1,0 +1,15 @@
+extends layout
+
+block header 
+  script(src="javascripts/login.js")
+  link(rel='stylesheet', type='text/css', href='/stylesheets/login.css')
+block content
+    .container
+        .main
+            form.form(method='post', action='#')
+            h2 Login
+            label User :
+            input#email(type='text', name='uname')
+            label Password :
+            input#password(type='password', name='password')
+            input#login(type='button', name='login', value='Login')
