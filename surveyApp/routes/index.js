@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('login', {title : 'test'});
+  res.render('index', {title : 'test'});
 });
 
 
@@ -24,10 +24,12 @@ router.post('/index', function(req, res, next){
 router.post('/login', function(req, res, next) {
    console.log(req.body);
    if(req.body.user == 'admin' && req.body.password == 'admin'){
-       res.send({ status : "success"});
-        //res.redirect('/index');
+       res.write({ status : "success"});
+       res.writeHead(300, {'Location': '/index' });
+       res.end();
+       //res.redirect('/index');
    } else {
-       response.send({ status : "error", message : "This user does not exits"});
+       res.send({ status : "error", message : "The user " + req.body.user + " does not exits"});
    }
 });
 module.exports = router;
