@@ -39,7 +39,7 @@ $(function () {
                 } else if(event.target == 'fillblank') {
                     makeFillBlankQuestion(divname);
                 } else if(event.target == 'tf') {
-                    
+                    makeTrueFalseQuestion(divname);
                 }
                 
             }
@@ -134,10 +134,10 @@ $(function () {
                                                 ans.push(choices[i]);
                                             }
                                         }
-                                        $(div).quizyFillBlank({
-                                            textItems : q,
-                                            anItems : ans,
-                                            anItemsCorrect:[1],
+                                        $('#'+div).quizyFillBlank({
+                                            textItems:['Start of your text', '. text continues ', '. text continues here ', ', ... and here', 'and here it ends.'],
+                                            anItems:['Answer1', 'Answer2', 'Answer3', 'Answer4', 'Answer5', 'Answer6', 'Answer7' ], 
+                                            anItemsCorrect:[2,1,4,6],
                                             blockSize:150
                                         });
                                     }
@@ -149,7 +149,7 @@ $(function () {
             });
         }
         $().w2popup('open', {
-            title   : 'True or False Question',
+            title   : 'Fill in the blank Question',
             body    : '<div id="form" style="width: 100%; height: 100%;"></div>',
             style   : 'padding: 15px 0px 0px 0px',
             width   : 500,
@@ -301,6 +301,56 @@ $(function () {
             onOpen: function (event) {
                 event.onComplete = function () {
                     $('#w2ui-popup #form').w2render('mcGetInfo');
+                }
+            }
+        });
+    }
+    
+    var makeTrueFalseQuestion = function(div){
+        if (!w2ui.tfGetInfo) {
+            $().w2form({
+                name    : 'tfGetInfo',
+                style   : 'border: 0px; background-color: transparent;',
+                url     : '/mainpage',
+                fields: [
+                    { field: 'question', type: 'textarea', required: true, html: { caption: 'Question', attr: 'style="width: 300px; height: 100px"' } },
+                ],
+                actions: {
+                    "save": function () {
+                            if(this.validate().length == 0){
+                                this.save( function(res) {
+                                    if(res.status == "success"){
+                                        w2popup.close();
+                                        var q = $("#question").val();
+                                         $('#'+div).append(
+                                            '<br></br>' + 
+                                            '<label> True or False Question: ' + q +'</label>'                            
+                                        );
+                                    }
+                                });
+                            }
+                        },
+                    "reset": function () { this.clear(); },
+                }
+            });
+        }
+        $().w2popup('open', {
+            title   : 'True or False Question',
+            body    : '<div id="form" style="width: 100%; height: 100%;"></div>',
+            style   : 'padding: 15px 0px 0px 0px',
+            width   : 500,
+            height  : 300, 
+            showMax : true,
+            onToggle: function (event) {
+                $(w2ui.tfGetInfo.box).hide();
+                event.onComplete = function () {
+                    $(w2ui.tfGetInfo.box).show();
+                    w2ui.tfGetInfo.resize();
+                }
+            },
+            onOpen: function (event) {
+                event.onComplete = function () {
+                    $('#w2ui-popup #form').w2render('tfGetInfo');
                 }
             }
         });

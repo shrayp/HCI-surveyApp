@@ -2,8 +2,12 @@ extends layout
 
 block header 
   script(src="javascripts/mainpage.js")
+  script(src="javascripts/jquery-ui.js")
   script(src="javascripts/jquery.quizyfillblank.js")
   link(rel='stylesheet', type='text/css', href='/stylesheets/quizyfillblank.css')
+  link(rel='stylesheet', type='text/css', href='/stylesheets/jquery-ui.css')
+  link(rel='stylesheet', type='text/css', href='/stylesheets/jquery-ui.structure.css')
+  link(rel='stylesheet', type='text/css', href='/stylesheets/jquery-ui.theme.css')
 block content
   h1#title.title
   #toolbar(style='width: 100%; height: 30px;')
