@@ -23,7 +23,7 @@ $(function () {
                 { id: 'Elements', text: 'Elements', expanded: true, group: true,
                 nodes: [ { id: 'mc', text: 'Add multiple choice' },
                         { id: 'la', text: 'Add long answer' },
-                        { id: 'rating', text: 'Add rating' },
+                        { id: 'fillblank', text: 'Add fill in blank' },
                         { id: 'tf', text: 'Add true/false' }
                         ]
                 },
@@ -36,8 +36,8 @@ $(function () {
                     makeMCQuestionDiv(divname);
                 } else if(event.target == 'la') {
                     makeLongAnswerQuestionDiv(divname);
-                } else if(event.target == 'rating') {
-                    
+                } else if(event.target == 'fillblank') {
+                    makeFillBlankQuestion(divname);
                 } else if(event.target == 'tf') {
                     
                 }
@@ -92,6 +92,84 @@ $(function () {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         return text;
+    }
+    
+    
+    var makeFillBlankQuestion = function(div){
+        if (!w2ui.getfillInfo) {
+            $().w2form({
+                name    : 'getfillInfo',
+                style   : 'border: 0px; background-color: transparent;',
+                url     : '/mainpage',
+                fields: [
+                    { field: 'question', type: 'textarea', required: true, html: { caption: 'Question', attr: 'style="width: 300px; height: 100px"' } },
+                    { field: 'choice_1', type: 'text', required: true, html: { caption: 'Choice 1', attr: 'style="width: 300px"' } },
+                    { field: 'choice_2', type: 'text', required: true, html: { caption: 'Choice 2', attr: 'style="width: 300px"' } },
+                    { field: 'choice_3', type: 'text', required: false, html: { caption: 'Choice 3', attr: 'style="width: 300px"' } },
+                    { field: 'choice_4', type: 'text', required: false, html: { caption: 'Choice 4', attr: 'style="width: 300px"' } },
+                    { field: 'choice_5', type: 'text', required: false, html: { caption: 'Choice 5', attr: 'style="width: 300px"' } },
+                ],
+                record: { 
+                    question : 'Please leave a " # " at every spot where an answer would go.',
+                    choice_1 : 'Required',
+                    choice_2 : 'Required',
+                    choice_3 : 'Optional',
+                    choice_4 : 'Optional',
+                    choice_5 : 'Optional'
+                },
+                actions: {
+                    "save": function () {
+                            if(this.validate().length == 0){
+                                this.save( function(res) {
+                                    if(res.status == "success"){
+                                        w2popup.close();
+                                        var question = $("#question").val();
+                                        var q = question.split('#');
+                                        
+                                        var choices = [$('#choice_1').val(), $('#choice_2').val(), $('#choice_3').val(), $('#choice_4').val(),$('#choice_5').val()];
+                                        var ans = [];
+                                        
+                                        for(i=0; i<choices.length, i++;){
+                                            if(i != ""){
+                                                ans.push(i);
+                                            }
+                                        }
+                                        
+                                        console.log(ans);
+                                        $(div).quizyFillBlank({
+                                            textItems : q,
+                                            anItems : ans,
+                                            anItemsCorrect:[1],
+                                            blockSize:150
+                                        });
+                                    }
+                                });
+                            }
+                        },
+                    "reset": function () { this.clear(); },
+                }
+            });
+        }
+        $().w2popup('open', {
+            title   : 'True or False Question',
+            body    : '<div id="form" style="width: 100%; height: 100%;"></div>',
+            style   : 'padding: 15px 0px 0px 0px',
+            width   : 500,
+            height  : 300, 
+            showMax : true,
+            onToggle: function (event) {
+                $(w2ui.getfillInfo.box).hide();
+                event.onComplete = function () {
+                    $(w2ui.getfillInfo.box).show();
+                    w2ui.getfillInfo.resize();
+                }
+            },
+            onOpen: function (event) {
+                event.onComplete = function () {
+                    $('#w2ui-popup #form').w2render('getfillInfo');
+                }
+            }
+        });
     }
     
     /**
@@ -173,54 +251,9 @@ $(function () {
                 },
                 actions: {
                     "save": function () {
-                            if(this.validate().length == 0){
-                                this.save(function(res) {
-                                    if(res.status == "success"){
-                                        w2popup.close();
-                                        $('#'+div).w2form({
-                                            name     : div + '',
-                                            header   : 'Field Types', 
-                                            fields: [
-                                                { field: 'field_enum', type: 'enum', openOnFocus: true , max: 1,  html: { caption: 'Test', attr: 'style="width: 300px"' }, 
-                                                options: { 
-                                                    items: [
-                                                            { id: 0, text: 'Pickle, Susan' },
-                                                            { id: 1, text: 'Adams, John' },
-                                                            { id: 2, text: 'Openhimer, Peter' },
-                                                            { id: 3, text: 'Woznyak, Steve' },
-                                                            { id: 4, text: 'Rusevelt, Franklin' },
-                                                            { id: 5, text: 'Stalone, Silvester' },
-                                                            { id: 6, text: 'Mann, Fred' },
-                                                            { id: 6, text: 'Ford, Mary' },
-                                                            { id: 8, text: 'Purky, Mon' },
-                                                            { id: 9, text: 'Min, Hla' }
-                                                        ] 
-                                            } },
-                                                { field: 'field.list', type: 'list', required: true,
-                                                    options: {
-                                                        match: 'contains',
-                                                        compare: function (item) {
-                                                            if (item.id < 4) return false;
-                                                        },
-                                                        items: [
-                                                            { id: 0, text: 'Pickle, Susan' },
-                                                            { id: 1, text: 'Adams, John' },
-                                                            { id: 2, text: 'Openhimer, Peter' },
-                                                            { id: 3, text: 'Woznyak, Steve' },
-                                                            { id: 4, text: 'Rusevelt, Franklin' },
-                                                            { id: 5, text: 'Stalone, Silvester' },
-                                                            { id: 6, text: 'Mann, Fred' },
-                                                            { id: 6, text: 'Ford, Mary' },
-                                                            { id: 8, text: 'Purky, Mon' },
-                                                            { id: 9, text: 'Min, Hla' }
-                                                        ]
-                                                    }
-                                                },
-                                            ]
-                                        });
-                                    }
-                                });
-                            }
+                            w2popup.close();
+                            this.save();
+                            //add mc to page
                         },
                     "reset": function () { this.clear(); },
                 }

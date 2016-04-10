@@ -1,6 +1,6 @@
 $(document).ready(function(){
     $("#login").click(function(){
-        var user = $("#user").val();
+        var user = $("#username").val();
         var password = $("#password").val();
         
         if( user =='' || password ==''){
@@ -18,15 +18,16 @@ $(document).ready(function(){
                 if(data.status == 'error') {
                     $('input[type="text"]').css({"border":"2px solid red","box-shadow":"0 0 3px red"});
                     $('input[type="password"]').css({"border":"2px solid #00F5FF","box-shadow":"0 0 5px #00F5FF"});
+                    console.log(data);
                     w2popup.open({
                         title: 'Something went wrong',
                         body: '<div class="w2ui-centered">' + data.message +'</div>',
                         buttons: '<button class="btn" onclick="w2popup.close();">Close</button> '
                     });
-                } else if(data=='success'){
+                } else if(data.status =='success'){
                     $("form")[0].reset();
                     $('input[type="text"],input[type="password"]').css({"border":"2px solid #00F5FF","box-shadow":"0 0 5px #00F5FF"});
-                    //alert(data);
+                    console.log(data);
                 }
             });
         }
