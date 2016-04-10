@@ -31,7 +31,7 @@ $(function () {
             onClick: function (event) {
                 //generate a name for the element and element to main display
                 var divname = randstring();
-                 $('#testAreaDiv').append('<div class="'+ divname +'" id="'+ divname +'">');
+                 $('#testAreaDiv').append('<div class="'+ divname +'" id="'+ divname +'", style="display: block; top: 0px; overflow: auto; background-color: rgb(245, 246, 247); padding: 5px;">');
                 if(event.target == 'mc'){
                     makeMCQuestionDiv(divname);
                 } else if(event.target == 'la') {
@@ -129,13 +129,11 @@ $(function () {
                                         var choices = [$('#choice_1').val(), $('#choice_2').val(), $('#choice_3').val(), $('#choice_4').val(),$('#choice_5').val()];
                                         var ans = [];
                                         
-                                        for(i=0; i<choices.length, i++;){
-                                            if(i != ""){
-                                                ans.push(i);
+                                        for(i=0;i<choices.length; i++){
+                                            if(choices[i]){
+                                                ans.push(choices[i]);
                                             }
                                         }
-                                        
-                                        console.log(ans);
                                         $(div).quizyFillBlank({
                                             textItems : q,
                                             anItems : ans,
@@ -191,7 +189,11 @@ $(function () {
                                 this.save( function(res) {
                                     if(res.status == "success"){
                                         w2popup.close();
-                                        //todo add contents of form to page
+                                        var q = $("#question").val();
+                                         $('#'+div).append(
+                                            '<br></br>' + 
+                                            '<label> Long Answer Question: ' + q +'</label>'                            
+                                        );
                                     }
                                 });
                             }
@@ -252,8 +254,31 @@ $(function () {
                 actions: {
                     "save": function () {
                             w2popup.close();
-                            this.save();
-                            //add mc to page
+                            this.save(function(res){
+                                var q = $("#question").val();
+                                var choices = [$('#choice_1').val(), $('#choice_2').val(), $('#choice_3').val(), $('#choice_4').val(),$('#choice_5').val()];
+                                var ans = [];
+
+                                for(i=0;i<choices.length; i++){
+                                    if(choices[i]){
+                                        ans.push(choices[i]);
+                                    }
+                                }
+                                $('#'+div).append(
+                                    '<br></br>' + 
+                                    '<label> Multiple Choice Question: ' + q +'</label>'                            
+                                );
+                                
+                                for(i=0;i<ans.length; i++){
+                                    $('#'+div).append(
+                                        '<div class= choice'+ i +'>' +
+                                        '<label> Choice ' + i + ': ' + ans[i] +'</label>' +
+                                        '</div>' 
+                                    )
+                                }
+                                
+                            });
+                            
                         },
                     "reset": function () { this.clear(); },
                 }
